@@ -1,8 +1,8 @@
 from fastapi import FastAPI, UploadFile, File
 import cv2
 import numpy as np
-import matplotlib.pyplot as plt
-from fastapi.responses import Response
+from fastapi.responses import StreamingResponse
+import io
 
 app = FastAPI()
 
@@ -22,6 +22,8 @@ async def process_image(file: UploadFile = File(...)):
     # Apply Canny edge detection
     canny = cv2.Canny(blur, 10, 150)
     
-    # Encode processed image to return as response
+    # Encode image to stream as response
     _, encoded_img = cv2.imencode('.png', canny)
-    return Response(content=encoded_img.tobytes(), media_type="image/png")
+    img_bytes = io.BytesIO(encoded_img.tobytes())
+
+    return StreamingResponse(img_bytes, media_type="image/png")
