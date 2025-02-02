@@ -3,3 +3,4 @@ uvcorn
 python-multipart
 opencv-python
 matplotlib
+pillow
